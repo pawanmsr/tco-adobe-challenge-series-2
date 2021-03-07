@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+        <title>{{ title }}</title>
+        <base href="{{ base_url }}">
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">TCO-ACS</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav">
+                        {% if current_user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Hi, {{ current_user.name }}
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownUser">
+                                <li><a class="dropdown-item" href="{{ url_for('dashboard_bp.logout') }}">Logout</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('dashboard_bp.dashboard') }}">Dashboard</a></li>
+                            </ul>
+                        </li>
+                        {% else %}
+                        <li>
+                            <a class="nav-link" href="{{ url_for('auth_bp.login') }}">Login</a>
+                        </li>
+                        {% endif %}
+                        
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownOptions" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Operations
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownOptions">
+                                <li><a class="dropdown-item" href="{{ url_for('dashboard_bp.upload') }}">Upload</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('dashboard_bp.view') }}">View</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('dashboard_bp.merge') }}">Merge</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('dashboard_bp.split') }}">Split</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('dashboard_bp.delete') }}">Delete</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('dashboard_bp.reorder') }}">Reorder</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">Sign</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container-sm text-center my-3">
+            <h2> {{ title }} </h2>
+        <div>
+
+        <div class="container-sm text-center my-3">
+            {% for message in get_flashed_messages() %}
+            <div class="alert alert-warning">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+
+        {% block content %}{% endblock %}
+
+        <!-- Option 1: Bootstrap Bundle with Popper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+    </body>
+</html>

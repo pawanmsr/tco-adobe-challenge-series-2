@@ -1,0 +1,24 @@
+<form method="POST" enctype="multipart/form-data" action="{{ base_url + url_for('dashboard_bp.upload') }}" class="p-3">
+    <div class="mb-3">
+        {{ form.csrf_token }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.upload.label }}
+        {{ form.upload(class="form-control") }}
+        
+        {% if form.upload.errors %}
+        <ul>
+            {% for error in form.upload.errors %}
+            <li class="text-danger">{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+
+    <div class="text-center">
+        <div class="mb-3">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </div>
+</form>

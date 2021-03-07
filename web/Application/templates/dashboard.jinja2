@@ -1,0 +1,134 @@
+{% extends "layout.jinja2" %}
+
+{% block content %}
+<div class="container-sm shadow my-3">
+    <div class="row my-3">
+        <div class="col mx-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Upload</h5>
+                    <p class="card-text">
+                        Upload pdf. 
+                        Once pdf is uploaded, operations can be performed on them.
+                    </p>
+                    <a href="{{ base_url + url_for('dashboard_bp.upload') }}" class="card-link">New PDF</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col mx-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">View</h5>
+                    <p class="card-text">
+                        View uploaded pdfs and pdfs generated as result of various operations.
+                        You may choose to download the pdfs owned by you.
+                    </p>
+                    <a href="{{ base_url + url_for('dashboard_bp.view') }}" class="card-link">View PDFs</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row my-3">
+        <div class="col mx-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Merge</h5>
+                    <p class="card-text">
+                        Merge two pdfs.
+                        Choose pdfs to merge, from available pdfs.
+                        To make any pdf available, you have to upload them first.
+                        Perform merge operation and view the result when the process completes.
+                    </p>
+                    <a href="{{ base_url + url_for('dashboard_bp.merge') }}" class="card-link">Merge Two PDFs</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col mx-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Reorder</h5>
+                    <p class="card-text">
+                        Reorder the pdf pages.
+                        Choose a pdf, from available pdfs.
+                        To make any pdf available, you have to upload them first.
+                        Provide the new page order.
+                        Perform reorder operation and view the result when the process completes.
+                    </p>
+                    <a href="{{ base_url + url_for('dashboard_bp.reorder') }}" class="card-link">Reorder PDF</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row my-3">
+        <div class="col mx-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Delete</h5>
+                    <p class="card-text">
+                        Delete page from a pdf.
+                        Choose a pdf, from available pdfs.
+                        To make any pdf available, you have to upload them first.
+                        Enter page number to delete from the pdf.
+                        Perform delete operation and view the result when the process completes.
+
+                    </p>
+                    <a href="{{ base_url + url_for('dashboard_bp.delete') }}" class="card-link">Delete Page from PDF</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col mx-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Split</h5>
+                    <p class="card-text">
+                        Split pdf.
+                        Choose a pdf, from available pdfs.
+                        To make any pdf available, you have to upload them first.
+                        Enter number of pages in the split pdfs.
+                        Perform split operation and view the results when process completes.
+                    </p>
+                    <p class="card-text">
+                        Under Development.
+                    </p>
+                    <a href="{{ base_url + url_for('dashboard_bp.split') }}" class="card-link">Split PDF</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row my-3">
+        <div class="col mx-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Sign</h5>
+                    <p class="card-text">
+                        Sign the pdfs you own with your name.
+                        Request other user to sign a pdf you own.
+                        Attend to sign requests from other users.
+                        You may view the pdfs with pending sign requests view section.
+                    </p>
+                    <p>
+                        Under Development.
+                    </p>
+                    <a href="{{ base_url + url_for('dashboard_bp.sign') }}" class="card-link">Sign PDF</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col mx-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text"></p>
+                    <a href="#" class="card-link"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,10 @@
+__pycache__/
+node_modules/
+.vscode
+.env
+app.ini
+storage/
+pdftools-api-credentials.json
+api/config/*
+private.key
+node
