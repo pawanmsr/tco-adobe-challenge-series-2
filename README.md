@@ -165,7 +165,7 @@ The start commands must be executed in seperate command line instances.
 
 ## Operations
 
-Video demonstration of set up and the application can be found [here](https://drive.google.com/file/d/1dDaeE2dS9SHvDWCsguJmIZuWaKQoCQJe/view?usp=sharing).
+Video demonstration of set up and the application can be found [here](https://drive.google.com/file/d/1dDaeE2dS9SHvDWCsguJmIZuWaKQoCQJe/view?usp=sharing) or can be downloaded [here](https://drive.google.com/file/d/18IjGhudcVxylOxLnVyCGQKt84Y5njKYH/view?usp=sharing).
 
 Visit the application dashboard for more details.
 
