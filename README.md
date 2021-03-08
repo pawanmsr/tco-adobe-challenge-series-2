@@ -2,6 +2,8 @@
 
 Adobe challenge series on topcoder.  
 
+TL;DR: Jump to [Set Up](#set-up) and [Demonstration](#demonstration)
+
 In this challenge, you will build a simple platform (web app) that allows two firms to sign an agreement by leveraging Adobe Sign API.  
 
 1. Login Screen  
@@ -188,12 +190,17 @@ Delete a page from pdf.
 Split pdf into multiple files.  
 This operation was under development when video demonstration was created. It is now available.  
 
+Signing pdfs was optional and has not been implemented.  
 Visit the application dashboard for more details.  
 
-Video demonstration of set up and the application can be found [here](https://drive.google.com/file/d/18IjGhudcVxylOxLnVyCGQKt84Y5njKYH/view?usp=sharing). Please download, extract and view the video on a large screen. I apologise for the quality. The video demonstration is for an older version. Few functionalities have been added since it was recorded.  
+## Demonstration
+
+Video demonstration of set up and the application can be found [here](https://drive.google.com/file/d/18IjGhudcVxylOxLnVyCGQKt84Y5njKYH/view?usp=sharing). Please download, extract and view the video on a large screen. I apologise for the quality. The video demonstration is for an older version. Few functionalities have been added since it was recorded. This is a resubmission.  
+
+The pdfs used in the demo are part of the resources supplied with node tools sdk personalized code samples.  
 
 ---
 
 Author: pawanmsr  
-Last updated: March 7, 2021  
+Last updated: March 8, 2021  
 Hours clocked: 21    
