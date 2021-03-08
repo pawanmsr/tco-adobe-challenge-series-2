@@ -195,7 +195,7 @@ Visit the application dashboard for more details.
 
 ## Demonstration
 
-Video demonstration of set up and the application can be found [here](https://drive.google.com/file/d/18IjGhudcVxylOxLnVyCGQKt84Y5njKYH/view?usp=sharing). Please download, extract and view the video on a large screen. I apologise for the quality. The video demonstration is for an older version. Few functionalities have been added since it was recorded. This is a resubmission.  
+Video demonstration of set up and the application can be found [here](https://drive.google.com/drive/folders/1sf5kOe7byQzX03YusLubsVypiU0ocU6A?usp=sharing). Please download the zip file, extract it and view the video on a large screen. The quality is limited by the free tool that I was using. Video demonstrations maybe for older version of the application. Few functionalities may have been added later.  
 
 The pdfs used in the demo are part of the resources supplied with node tools sdk personalized code samples.  
 
