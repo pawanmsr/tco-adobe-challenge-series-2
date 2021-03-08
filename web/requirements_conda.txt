@@ -56,6 +56,7 @@ pycparser=2.20=pyh9f0ad1d_2
 pylint=2.7.1=py39h06a4308_1
 pymysql=1.0.2=pypi_0
 pyopenssl=20.0.1=pyhd8ed1ab_0
+pypdf2=1.26.0=py_2
 pyrsistent=0.17.3=py39h3811e60_2
 pysocks=1.7.1=py39hf3d152e_3
 python=3.9.1=hdb3f193_2
