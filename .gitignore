@@ -7,4 +7,3 @@ storage/
 pdftools-api-credentials.json
 api/config/*
 private.key
-node
