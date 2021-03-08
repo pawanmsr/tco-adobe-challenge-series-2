@@ -140,4 +140,56 @@ router.post('/reorder', function(req, res, next) {
   res.json({"status": status});
 });
 
+router.post('/split', function(req, res, next) {
+  console.log(req.body.num_files);
+  console.log(req.body.file);
+  console.log(req.body.outputs);
+  var status = true;
+  if (!req.body.num_files || !req.body.file || !req.body.outputs) {
+    status = false;
+  }
+  else {
+    try {
+      // Create an ExecutionContext using credentials
+      const executionContext = PDFToolsSdk.ExecutionContext.create(credentials);
+
+      // Create a new operation instance.
+      const splitPDFOperation = PDFToolsSdk.SplitPDF.Operation.createNew(),
+          input = PDFToolsSdk.FileRef.createFromLocalFile(
+              req.body.file,
+              PDFToolsSdk.SplitPDF.SupportedSourceFormat.pdf
+          );
+      // Set operation input from a source file.
+      splitPDFOperation.setInput(input);
+
+      // Set the number of documents to split the input PDF file into.
+      splitPDFOperation.setFileCount(parseInt(req.body.num_files, 10));
+
+      // Execute the operation and Save the result to the specified location.
+      splitPDFOperation.execute(executionContext)
+          .then(result => {
+              let saveFilesPromises = [];
+              for(let i = 0; i < result.length && i < req.body.outputs.length; i++){
+                  saveFilesPromises.push(result[i].saveAsFile(req.body.outputs[i]));
+              }
+              return Promise.all(saveFilesPromises);
+          })
+          .catch(err => {
+              if(err instanceof PDFToolsSdk.Error.ServiceApiError
+                  || err instanceof PDFToolsSdk.Error.ServiceUsageError) {
+                  console.log('Exception encountered while executing operation', err);
+              } else {
+                  console.log('Exception encountered while executing operation', err);
+              }
+          });
+    } catch (err) {
+        status = false;
+        console.log('Exception encountered while executing operation', err);
+    }
+  }
+
+  res.json({"status": status});
+});
+
+
 module.exports = router;
