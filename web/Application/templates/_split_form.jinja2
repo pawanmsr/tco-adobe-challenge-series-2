@@ -1,0 +1,37 @@
+<form method="POST" action="{{ base_url + url_for('dashboard_bp.split') }}" class="p-3">
+    <div class="mb-3">
+        {{ form.csrf_token }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.filename.label }}
+        {{ form.filename(class="form-select") }}
+
+        {% if form.filename.errors %}
+        <ul>
+            {% for error in form.filename.errors %}
+            <li class="text-danger">{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        {{ form.num_files.label }}
+        {{ form.num_files(class="form-control") }}
+
+        {% if form.num_files.errors %}
+        <ul>
+            {% for error in form.num_files.errors %}
+            <li class="text-danger">{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+
+    <div class="text-center">
+        <div class="mb-3">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </div>
+</form>

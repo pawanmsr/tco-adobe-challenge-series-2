@@ -126,3 +126,20 @@ class ReorderForm(FlaskForm):
         ]
     )
     submit = SubmitField('Reorder')
+
+class SplitForm(FlaskForm):
+    filename = SelectField(
+        'Filename',
+        choices=[],
+        validators=[
+            DataRequired()
+        ]
+    )
+    num_files = IntegerField(
+        'Number of files to split into.',
+        validators=[
+            InputRequired(),
+            NumberRange(min=1, max=None, message="Please enter a positive integer.")
+        ]
+    )
+    submit = SubmitField('Split')

@@ -10,7 +10,7 @@ from werkzeug.utils import secure_filename
 from .models import FileDetail
 from . import db
 
-from .forms import ViewForm, MergeForm, DeleteForm, ReorderForm
+from .forms import ViewForm, MergeForm, DeleteForm, ReorderForm, SplitForm
 
 import requests
 import json
@@ -18,6 +18,8 @@ import json
 from datetime import datetime
 from re import sub
 from string import punctuation
+
+from PyPDF2 import PdfFileReader
 
 dashboard_bp = Blueprint(
     'dashboard_bp',
@@ -97,7 +99,7 @@ def obtain_file(file_detail_id):
 def view():
     form = ViewForm()
     form.filename.choices = \
-        populate_filename_choices(current_user.id)
+        get_filename_choices(current_user.id)
     
     file_detail=None
     if form.validate_on_submit():
@@ -122,9 +124,9 @@ def merge():
     form = MergeForm()
     
     form.first_filename.choices = \
-        populate_filename_choices(current_user.id)
+        get_filename_choices(current_user.id)
     form.second_filename.choices = \
-        populate_filename_choices(current_user.id)
+        get_filename_choices(current_user.id)
     
     if form.validate_on_submit():
         redirect_url = current_app.config.get('BASE_URL') + \
@@ -140,7 +142,7 @@ def merge():
             id=form.second_filename.data
         ).first())
         if not second_file_detail:
-            flash(f'File {form.first_filename.data} absent.')
+            flash(f'File {form.second_filename.data} absent.')
         
         if not first_file_detail or not second_file_detail:
             flash('Unable to merge requested files.')
@@ -168,7 +170,7 @@ def merge():
         response = post(current_app.config.get('MERGE'), data=data)
         if not response.get('status', False):
             flash('Merge failure. Please retry.')
-            rollback_db()
+            rollback_from_db()
             return redirect(redirect_url)
         
         flash('Merge process initiated.')
@@ -190,10 +192,75 @@ def merge():
 @dashboard_bp.route('/split', methods=['GET', 'POST'])
 @login_required
 def split():
+    form = SplitForm()
+
+    form.filename.choices = \
+        get_filename_choices(current_user.id)
+    
+    if form.validate_on_submit():
+        redirect_url = current_app.config.get('BASE_URL') + \
+                url_for('dashboard_bp.split')
+        
+        try:
+            num_files = int(form.num_files.data)
+        except:
+            flash('File number must be an integer.')
+            redirect(redirect_url)
+
+        file_detail = check_file(FileDetail.query.filter_by(
+            id=form.filename.data
+        ).first())
+        if not file_detail:
+            flash(f'File {form.filename.data} absent.')
+            return redirect(redirect_url)
+        
+        if not check_page(num_files, file_detail):
+            return redirect(redirect_url)
+        
+        split_file_details = []
+        for i in range(num_files):
+            split_file_detail = FileDetail()
+            split_file_detail.filename = \
+                add_extension(process_filename(secure_filename(
+                    f'split_{i}_{get_timestamp()}' \
+                        f'_{process_filename(file_detail.filename)}'
+                )))
+            split_file_detail.owner = current_user.id
+            
+            result = add_to_db(split_file_detail)
+            if not result:
+                return redirect(redirect_url)
+            
+            split_file_details.append(split_file_detail)
+        
+        data = {
+            'file': get_standard_filepath(file_detail),
+            'num_files': num_files,
+            'outputs': [get_standard_filepath(split_file_detail) \
+                for split_file_detail in split_file_details]
+        }
+        
+        response = post(current_app.config.get('SPLIT'), data=data)
+        if not response.get('status', False):
+            flash('Split failure. Please retry.')
+            rollback_from_db()
+            return redirect(redirect_url)
+        
+        flash('Split process initiated.')
+        
+        result = commit_to_db()
+        if not result:
+            return redirect(redirect_url)
+        
+        for split_file_detail in split_file_details:
+            flash(f'{split_file_detail.filename} will be available ' \
+                'after process is successfully completed.')
+
     return render_template(
         'split.jinja2',
         title='Split',
-        base_url=current_app.config.get('BASE_URL')
+        base_url=current_app.config.get('BASE_URL'),
+        form=form
     )
 
 @dashboard_bp.route('/delete', methods=['GET', 'POST'])
@@ -202,11 +269,11 @@ def delete():
     form = DeleteForm()
     
     form.filename.choices = \
-        populate_filename_choices(current_user.id)
+        get_filename_choices(current_user.id)
     
     if form.validate_on_submit():
         redirect_url = current_app.config.get('BASE_URL') + \
-                url_for('dashboard_bp.delete')
+            url_for('dashboard_bp.delete')
         
         try:
             page = int(form.page.data)
@@ -219,6 +286,9 @@ def delete():
         ).first())
         if not file_detail:
             flash(f'File {form.filename.data} absent.')
+            return redirect(redirect_url)
+        
+        if not check_page(page, file_detail):
             return redirect(redirect_url)
         
         modified_file_detail = FileDetail()
@@ -242,7 +312,7 @@ def delete():
         response = post(current_app.config.get('DELETE'), data=data)
         if not response.get('status', False):
             flash('Page delete failure. Please retry.')
-            rollback_db()
+            rollback_from_db()
             return redirect(redirect_url)
         
         flash('Page deletion process initiated.')
@@ -267,7 +337,7 @@ def reorder():
     form = ReorderForm()
     
     form.filename.choices = \
-        populate_filename_choices(current_user.id)
+        get_filename_choices(current_user.id)
     
     if form.validate_on_submit():
         redirect_url = current_app.config.get('BASE_URL') + \
@@ -285,6 +355,9 @@ def reorder():
         if not file_detail:
             flash(f'File {form.filename.data} absent.')
             return redirect(redirect)
+        
+        if not check_page(pages, file_detail):
+            return redirect(redirect_url)
         
         reordered_file_detail = FileDetail()
         reordered_file_detail.filename = \
@@ -307,7 +380,7 @@ def reorder():
         response = post(current_app.config.get('REORDER'), data=data)
         if not response.get('status', False):
             flash('Page reorder failure. Please retry.')
-            rollback_db()
+            rollback_from_db()
             return redirect(redirect_url)
         
         flash('Page reorder process initiated.')
@@ -335,7 +408,7 @@ def sign():
         base_url=current_app.config.get('BASE_URL')
     )
 
-def rollback_db():
+def rollback_from_db():
     db.session.rollback()
     return False
 
@@ -346,7 +419,7 @@ def add_to_db(entity, flush=True):
             db.session.flush()
     except:
         flash('Add to database failed.')
-        return rollback_db()
+        return rollback_from_db()
     
     return True
 
@@ -355,7 +428,7 @@ def commit_to_db():
         db.session.commit()
     except:
         flash('Commit to database failed.')
-        return rollback_db()
+        return rollback_from_db()
     
     return True
 
@@ -385,7 +458,7 @@ def get_standard_filepath(file_detail):
         get_standard_filename(file_detail))
     return path
 
-def populate_filename_choices(owner):
+def get_filename_choices(owner):
     file_details = FileDetail.query.filter_by(
         owner=owner
     ).all()
@@ -406,3 +479,35 @@ def post(endpoint, data=None, files=None, headers=None, as_dict=True):
     if as_dict and isinstance(response, str):
         return json.loads(response)
     return response
+
+def get_num_pages(filepath):
+    num_pages = None
+    with open(filepath, 'rb') as f:
+        pdf = PdfFileReader(f)
+        num_pages = pdf.getNumPages()
+    return num_pages
+
+def check_page(pages, file_detail):
+    if isinstance(pages, list):
+        for page in pages:
+            result = check_page(page, file_detail)
+            if result:
+                continue
+            return result
+        return True
+    
+    try:
+        pages = int(pages)
+    except:
+        return False
+    
+    num_pages = get_num_pages(get_standard_filepath(file_detail))
+    if not num_pages:
+        return None
+    
+    if pages > num_pages:
+        flash(f'Specified value {pages} exceeds number '\
+            f'of pages in {file_detail.filename}.')
+        return False
+    
+    return True

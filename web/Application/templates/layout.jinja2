@@ -49,7 +49,7 @@
                                 <li><a class="dropdown-item" href="{{ url_for('dashboard_bp.delete') }}">Delete</a></li>
                                 <li><a class="dropdown-item" href="{{ url_for('dashboard_bp.reorder') }}">Reorder</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#">Sign</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('dashboard_bp.sign') }}">Sign</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -59,7 +59,7 @@
 
         <div class="container-sm text-center my-3">
             <h2> {{ title }} </h2>
-        <div>
+        </div>
 
         <div class="container-sm text-center my-3">
             {% for message in get_flashed_messages() %}
